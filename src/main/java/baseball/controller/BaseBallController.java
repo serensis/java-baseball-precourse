@@ -13,32 +13,35 @@ public class BaseBallController {
         this.baseBallService = baseBallService;
     }
 
-    public String checkInputData(String input) {
+    public String checkValidData(String input) {
+        validationData(input);
+
         String result = "";
-        if (validNumber(input))
-        {
-            BaseBall baseBall = baseBallService.checkInputData(input);
-            result = BaseballView.toString(baseBall);
-        }
+
+        BaseBall baseBall = baseBallService.countInputData(input);
+        result = BaseballView.toSatusString(baseBall);
+
         return result;
     }
 
-    public boolean checkInGameData(String data) {
-        return data.length() == 3;
-    }
-
-    public boolean isStop(String data) {
-        if (data.length() <= 0) throw new IllegalArgumentException("길이가 안맞음");
-        if (data.equals("1")) return false;
-        if (data.equals("2")) return true;
-        return false;
-    }
-
-    public boolean validNumber(String data) {
+    private void validationData(String input) {
         try {
-            return Integer.parseInt(data) > 0;
+            Integer.parseInt(input);
+            if (input.length() > 3) {
+                throw new IllegalArgumentException("세자리 수를 입력해 주세요.");
+            }
         } catch (NumberFormatException e) {
-            return false;
+            throw new IllegalArgumentException("숫자를 입력해 주세요.");
         }
+    }
+
+    public boolean isStop() {
+        boolean result = baseBallService.checkComplete();
+
+        return result;
+    }
+
+    public void initData() {
+        baseBallService.initData();
     }
 }
